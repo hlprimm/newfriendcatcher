@@ -41,7 +41,8 @@ while True:
         if any(string in op_text for string in tier1): has_newfriend = True
         for x in range(len(tier2)):
             if tier2[x] in op_text or submission.title:
-                if any(string in op_text for string in tier2) and not tier2[x]: has_newfriend = True
+                for y in range(len(tier2)):
+                    if tier2[y] in op_text and tier2[y] is not tier2[x]: has_newfriend = False
 
         flair = submission.author_flair_text
         if submission.id not in already_done and has_newfriend and not flair:
