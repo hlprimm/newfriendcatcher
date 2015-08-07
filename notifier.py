@@ -18,6 +18,8 @@ json_key = json.load(open('newfriendcatcher.json'))
 scope = ['https://spreadsheets.google.com/feeds']
 credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
 gc = gspread.authorize(credentials)
+sht = gc.open_by_url('https://docs.google.com/spreadsheets/d/1BKBsGCAKTRi_aPmzIoEO6FsJF8HDxMEw5eh7L37BJvw/edit#gid=0')
+
 
 #importing config
 apitoken = cfg['apitoken'] 
@@ -42,7 +44,7 @@ tier2 = cfg["tier2"]
 
 #don't change below plz
 while True:
-    print 'Checking for more newfriends...'
+    print ('Checking for more newfriends...')
     subreddit = r.get_subreddit('civcraft')
     for submission in subreddit.get_new(limit=10):
         op_text = submission.selftext.lower()
@@ -59,9 +61,9 @@ while True:
             client.chat_post_message(channel, msg, username='Newfriend Catcher')
             already_done.append(submission.id)
             output.write(submission.id+"\n")
-            print 'Sending to Slack!'
+            print ('Sending to Slack!')
             time.sleep(120)
 
         else:
-            print '\033[1m' + submission.title + '\033[0m' + ' does not meet criteria, moving on'
+            print ('\033[1m' + submission.title + '\033[0m' + ' does not meet criteria, moving on')
             time.sleep(10)
