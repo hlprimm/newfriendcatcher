@@ -1,9 +1,16 @@
-apitoken:
+apitoken: 
 channel:
 redditusername:
 redditpassword:
-keywords:
-    - joining
-    - looking
-    - new
-    - server
+tier1:
+    -Looking to join
+    -group of friends
+    -new person
+tier2:
+    -joining
+    -settlement
+    -large city
+    -small city
+    -large town
+    -small town
+    -start

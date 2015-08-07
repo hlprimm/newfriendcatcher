@@ -24,6 +24,8 @@ apitoken = cfg['apitoken']
 channel = cfg['channel']
 username = cfg['redditusername']
 password = cfg ['redditpassword']
+
+print(list)
 #passing API token to pyslack
 client = SlackClient(apitoken)
 
@@ -35,8 +37,8 @@ r.login(username,password,disable_warning=True)
 already_done = str(input.read()).split()
 
 #keywords to search, need to pull these from the yaml too. 
-tier1 = ['Looking to join', 'group of friends', 'new person']
-tier2 = ['joining',"settlement","large city","small city","large town","small town","start"]
+tier1 = cfg["tier1"]
+tier2 = cfg["tier2"]
 
 #don't change below plz
 while True:
