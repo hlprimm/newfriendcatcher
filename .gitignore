@@ -1,2 +1,3 @@
 config.yml
 storage.txt
+*.json
