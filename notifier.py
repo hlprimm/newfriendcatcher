@@ -2,15 +2,15 @@ import time
 import praw
 from pyslack import SlackClient
 
-client = SlackClient('xoxb-8778264791-9vC1DJEv8939xFHiUJqktn3c')
-
-
+#add your api token, get one here: https://senntisten.slack.com/services/new/bot
+client = SlackClient('SLACK API TOKEN')
 
 r = praw.Reddit('NewfriendCatcher by hlprimm /u/ajisai v 1.0')
 
 r.login()
 already_done = [] 
 
+#keywords to search
 newfriendWords = ['new', 'looking', 'join', 'server']
 
 while True:
@@ -21,7 +21,9 @@ while True:
 	
 		if submission.id not in already_done and has_newfriend:
 			msg = '[NEWFRIEND?](%s)' % submission.short_link
-			client.chat_post_message('#newfriends', msg, username='newfriendcatcher')
+			#Change DESTINATIONCHANNEL to channel you want the message to go. 
+			#Change NewfriendCatcher to whatever your bot name is on Slack.
+			client.chat_post_message('#DESTINATIONCHANNEL', msg, username='NewfriendCatcher')
 			already_done.append(submission.id)
 	time.sleep(1800);
 
