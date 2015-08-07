@@ -33,7 +33,7 @@ tier2 = ['joining',"settlement","large city","small city","large town","small to
 while True:
     print 'Checking for more newfriends...'
     subreddit = r.get_subreddit('civcraft')
-    for submission in subreddit.get_new(limit=25):
+    for submission in subreddit.get_new(limit=10):
         op_text = submission.selftext.lower()
         has_newfriend = False
         if any(string in op_text for string in tier1): has_newfriend = True
@@ -53,4 +53,4 @@ while True:
 
         else:
             print '\033[1m' + submission.title + '\033[0m' + ' does not meet criteria, moving on'
-            time.sleep(5)
+            time.sleep(10)
