@@ -1,5 +1,7 @@
-apitoken: slackapitoken
-channel: '#channel'
+apitoken:
+channel:
+redditusername:
+redditpassword:
 keywords:
     - joining
     - looking
