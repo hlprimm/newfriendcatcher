@@ -55,4 +55,4 @@ while True:
 
         else:
             print '\033[1m' + submission.title + '\033[0m' + ' does not meet criteria, moving on'
-            time.sleep(5)
+            time.sleep(10)
