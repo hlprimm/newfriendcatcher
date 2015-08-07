@@ -1,0 +1,7 @@
+apitoken: slackapitoken
+channel: '#channel'
+keywords:
+    - joining
+    - looking
+    - new
+    - server
