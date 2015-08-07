@@ -5,7 +5,7 @@ import praw
 import yaml
 from pyslack import SlackClient
 
-input = open("storage.txt","r")
+input = open("output.txt","r")
 
 with open("config.yml", 'r') as ymlfile:
 	cfg = yaml.load(ymlfile)
@@ -13,13 +13,14 @@ with open("config.yml", 'r') as ymlfile:
 #importing config
 apitoken = cfg['apitoken'] 
 channel = cfg['channel']
-
+username = cfg['redditusername']
+password = cfg ['redditpassword']
 #passing API token to pyslack
 client = SlackClient(apitoken)
 
 #init PRAW and login
 r = praw.Reddit('NewfriendCatcher by hlprimm /u/ajisai v 1.0')
-r.login(disable_warning=True)
+r.login(username,password,disable_warning=True)
 
 #ghetto per-instance "database" until i figure yaml out
 already_done = str(input.read()).split()
@@ -42,12 +43,14 @@ while True:
 
         flair = submission.author_flair_text
         if submission.id not in already_done and has_newfriend and not flair:
-            output = open("storage.txt","a")
+            output = open("output.txt","a")
             msg = '[NEWFRIEND?] ' + submission.title + submission.short_link
             client.chat_post_message(channel, msg, username='Newfriend Catcher')
             already_done.append(submission.id)
             output.write(submission.id+"\n")
             print 'Sending to Slack!'
+            time.sleep(120)
 
-        else: print '\033[1m' + submission.title + '\033[0m' + ' does not meet criteria, moving on'
-        time.sleep(120);
+        else:
+            print '\033[1m' + submission.title + '\033[0m' + ' does not meet criteria, moving on'
+            time.sleep(5)
