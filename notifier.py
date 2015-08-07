@@ -1,29 +1,42 @@
+#!/usr/bin/python
+
 import time
 import praw
+import yaml
 from pyslack import SlackClient
 
-apitoken = raw_input('Enter your slack API token: ')
-channel = raw_input('Enter the slack channel with # before the channel name (example: #random): ')
+with open("config.yml", 'r') as ymlfile:
+	cfg = yaml.load(ymlfile)
 
+#importing config
+apitoken = cfg['apitoken'] 
+channel = cfg['channel']
+
+#passing API token to pyslack
 client = SlackClient(apitoken)
 
+#init PRAW and login
 r = praw.Reddit('NewfriendCatcher by hlprimm /u/ajisai v 1.0')
+r.login(disable_warning=True)
 
-r.login()
+#ghetto per-instance "database" until i figure yaml out
 already_done = [] 
 
-#keywords to search
+#keywords to search, need to pull these from the yaml too. 
 newfriendWords = ['new', 'looking', 'join', 'server']
 
+#don't change below plz
 while True:
+	print 'Checking for more newfriends...'
 	subreddit = r.get_subreddit('civcraft')
-	for submission in subreddit.get_new(limit=20):
+	for submission in subreddit.get_new(limit=25):
 		op_text = submission.selftext.lower()
 		has_newfriend = any(string in op_text for string in newfriendWords)
-	
-		if submission.id not in already_done and has_newfriend:
-			msg = '[NEWFRIEND?](%s)' %  submission.title + submission.short_link
-			client.chat_post_message(channel, msg, username='NewfriendCatcher')
+		flair = submission.author_flair_text	
+		if submission.id not in already_done and has_newfriend and not flair:
+			msg = '[NEWFRIEND?] ' + submission.title + submission.short_link
+			client.chat_post_message(channel, msg, username='Newfriend Catcher')
 			already_done.append(submission.id)
-	time.sleep(1800);
-
+			print 'Sending to Slack!'
+		else: print '\033[1m' + submission.title + '\033[0m' + ' does not meet criteria, moving on'
+	time.sleep(120);
