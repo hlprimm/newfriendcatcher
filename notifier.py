@@ -3,12 +3,21 @@
 import time
 import praw
 import yaml
+import json
+import gspread
+from oauth2client.client import SignedJwtAssertionCredentials
 from pyslack import SlackClient
 
 input = open("output.txt","r")
 
 with open("config.yml", 'r') as ymlfile:
 	cfg = yaml.load(ymlfile)
+
+#google sheets with gspread
+json_key = json.load(open('newfriendcatcher.json'))
+scope = ['https://spreadsheets.google.com/feeds']
+credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
+gc = gspread.authorize(credentials)
 
 #importing config
 apitoken = cfg['apitoken'] 
