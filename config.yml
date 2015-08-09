@@ -1,11 +1,14 @@
-apitoken:
+apitoken: 
 channel: '#newfriends'
-redditusername:
+redditusername: 
 redditpassword:
+sheetkey: 
 tier1:
-    -Looking to join
-    -group of friends
-    -new person
+    -looking
+    -join
+    -new
+    -starting
+    -server
 tier2:
     -joining
     -settlement
