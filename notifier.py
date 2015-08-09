@@ -13,19 +13,21 @@ input = open("output.txt","r")
 with open("config.yml", 'r') as ymlfile:
 	cfg = yaml.load(ymlfile)
 
-#google sheets with gspread
-json_key = json.load(open('newfriendcatcher.json'))
-scope = ['https://spreadsheets.google.com/feeds']
-credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
-gc = gspread.authorize(credentials)
-sht = gc.open_by_url('https://docs.google.com/spreadsheets/d/1BKBsGCAKTRi_aPmzIoEO6FsJF8HDxMEw5eh7L37BJvw/edit#gid=0')
-
-
 #importing config
-apitoken = cfg['apitoken'] 
+apitoken = cfg['apitoken']
 channel = cfg['channel']
 username = cfg['redditusername']
-password = cfg ['redditpassword']
+password = cfg['redditpassword']
+sheetkey = cfg['sheetkey']
+
+#google sheets with gspread
+#get your json file from google. see here: http://gspread.readthedocs.org/en/latest/oauth2.html
+json_key = json.load(open('newfriendcatcher.json'))
+scope = ['https://spreadsheets.google.com/feeds']
+credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'], scope)
+gc = gspread.authorize(credentials)
+sht = gc.open_by_key(sheetkey)
+worksheet = sht.get_worksheet(0)
 
 print(list)
 #passing API token to pyslack
@@ -50,20 +52,25 @@ while True:
         op_text = submission.selftext.lower()
         has_newfriend = False
         if any(string in op_text for string in tier1): has_newfriend = True
-        for x in range(len(tier2)):
-            if tier2[x] in op_text or submission.title:
-                for y in range(len(tier2)):
-                    if tier2[y] in op_text and tier2[y] is not tier2[x]: has_newfriend = False
+#        for x in range(len(tier2)):
+#            if tier2[x] in op_text or submission.title:
+#                for y in range(len(tier2)):
+#                    if tier2[y] in op_text and tier2[y] is not tier2[x]: has_newfriend = False
 
         flair = submission.author_flair_text
         if submission.id not in already_done and has_newfriend and not flair:
+            cellcounter = int(cellcounter) + 1 
+            worksheet.update_acell('E1', cellcounter)
+            worksheet.update_cell(cellcounter, 1, submission.id)
+            worksheet.update_cell(cellcounter, 2, submission.title)
+            worksheet.update_cell(cellcounter, 3, submission.short_link)
+            worksheet.update_cell(cellcounter, 4, submission.selftext)
             output = open("output.txt","a")
-            msg = '[NEWFRIEND?] ' + submission.title + submission.short_link
-            client.chat_post_message(channel, msg, username='Newfriend Catcher')
+#            msg = '[NEWFRIEND?] ' + submission.title + submission.short_link
+#            client.chat_post_message(channel, msg, username='Newfriend Catcher')
             already_done.append(submission.id)
             output.write(submission.id+"\n")
             print ('Sending to Slack!')
-            time.sleep(120)
 
         else:
             print ('\033[1m' + submission.title + '\033[0m' + ' does not meet criteria, moving on')
